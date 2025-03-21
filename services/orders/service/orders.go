@@ -21,6 +21,14 @@ func (s *OrderService) CreateOrder(ctx context.Context, order *orders.Order) err
 	return nil
 }
 
-func (s *OrderService) GetOrders(ctx context.Context) []*orders.Order {
-	return ordersDb
+func (s *OrderService) GetOrders(ctx context.Context, customerID int32) []*orders.Order {
+	var filteredOrders []*orders.Order
+
+	for _, order := range ordersDb {
+		if order.CustomerID == customerID {
+			filteredOrders = append(filteredOrders, order)
+		}
+	}
+
+	return filteredOrders
 }

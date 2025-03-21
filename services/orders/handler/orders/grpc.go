@@ -5,6 +5,7 @@ import (
 	"github.com/shahriar-mohim007/kitchen/services/common/genproto/orders"
 	"github.com/shahriar-mohim007/kitchen/services/types"
 	"google.golang.org/grpc"
+	"time"
 )
 
 type OrdersGrpcHandler struct {
@@ -22,7 +23,11 @@ func NewGrpcOrdersService(grpc *grpc.Server, ordersService types.OrderService) {
 }
 
 func (h *OrdersGrpcHandler) GetOrders(ctx context.Context, req *orders.GetOrdersRequest) (*orders.GetOrderResponse, error) {
-	o := h.ordersService.GetOrders(ctx)
+
+	customerID := req.CustomerID
+
+	o := h.ordersService.GetOrders(ctx, customerID)
+
 	res := &orders.GetOrderResponse{
 		Orders: o,
 	}
@@ -31,11 +36,12 @@ func (h *OrdersGrpcHandler) GetOrders(ctx context.Context, req *orders.GetOrders
 }
 
 func (h *OrdersGrpcHandler) CreateOrder(ctx context.Context, req *orders.CreateOrderRequest) (*orders.CreateOrderResponse, error) {
+
 	order := &orders.Order{
-		OrderID:    42,
-		CustomerID: 2,
-		ProductID:  1,
-		Quantity:   10,
+		OrderID:    generateOrderID(),
+		CustomerID: req.CustomerID,
+		ProductID:  req.ProductID,
+		Quantity:   req.Quantity,
 	}
 
 	err := h.ordersService.CreateOrder(ctx, order)
@@ -48,4 +54,8 @@ func (h *OrdersGrpcHandler) CreateOrder(ctx context.Context, req *orders.CreateO
 	}
 
 	return res, nil
+}
+
+func generateOrderID() int32 {
+	return int32(time.Now().Unix())
 }

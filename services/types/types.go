@@ -8,5 +8,5 @@ import (
 
 type OrderService interface {
 	CreateOrder(context.Context, *orders.Order) error
-	GetOrders(context.Context) []*orders.Order
+	GetOrders(ctx context.Context, customerID int32) []*orders.Order
 }
