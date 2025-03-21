@@ -19,9 +19,6 @@ type CreateOrderRequest struct {
 	Quantity   int32 `json:"quantity"`
 }
 
-type GetOrdersRequest struct {
-	CustomerID int32 `json:"customer_id"`
-}
 type HttpServer struct {
 	addr string
 }
